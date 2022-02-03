@@ -1,19 +1,18 @@
 
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.ElementsCollection;
-import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
+import com.codeborne.selenide.logevents.SelenideLogger;
 import com.github.javafaker.Faker;
+import io.qameta.allure.selenide.AllureSelenide;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import pages.DemoQaFormPage;
-
+import pages.DragAndDropPage;
 import java.util.HashMap;
 import java.util.Map;
-
-import static com.codeborne.selenide.Condition.text;
-import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.*;
 import static java.lang.String.format;
 
@@ -56,8 +55,15 @@ public class FirstTest {
 
     @BeforeEach
     public void setUp() {
-        Configuration.baseUrl = "https://demoqa.com/";
+        SelenideLogger.addListener("AllureSelenide", new AllureSelenide());
+
+        DesiredCapabilities capabilities = new DesiredCapabilities();
+        capabilities.setCapability("enableVNC", true);
+        capabilities.setCapability("enableVideo", true);
+
+        Configuration.browserCapabilities = capabilities;
         Configuration.startMaximized = true;
+        Configuration.remote = "https://user1:1234@selenoid.autotests.cloud/wd/hub/";
     }
 
     @Test
@@ -95,28 +101,16 @@ public class FirstTest {
         softly.assertAll();
     }
 
-    @Test
-    public void githubSelenideTest() {
-        Selenide.open("https://github.com/selenide/selenide");
-        $("#wiki-tab").click();
-        $x("//div[@id='wiki-body']").shouldHave(text("Soft assertions"));
-        $(byText("Soft assertions")).click();
-        $("#wiki-body").shouldHave(text("Using JUnit5 extend test class:"));
-    }
+
+    DragAndDropPage dragAndDropPage = new DragAndDropPage();
 
     @Test
     public void dragAndDropAtoBTest() {
-        Selenide.open("https://the-internet.herokuapp.com/drag_and_drop");
-        $("#column-a").dragAndDropTo("#column-b");
-        $("#column-b").shouldHave(text("A"));
-        $("#column-a").shouldHave(text("B"));
-    }
 
-    @Test
-    public void dragAndDropBtoATest() {
-        Selenide.open("https://the-internet.herokuapp.com/drag_and_drop");
-        $("#column-b").dragAndDropTo("#column-a");
-        $("#column-b").shouldHave(text("A"));
-        $("#column-a").shouldHave(text("B"));
+        dragAndDropPage
+                .openPage()
+                .columnAtoB()
+                .checkA()
+                .checkB();
     }
 }

@@ -2,6 +2,7 @@ package pages;
 
 import com.codeborne.selenide.Selenide;
 import components.Calendar;
+import io.qameta.allure.Step;
 
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.*;
@@ -10,7 +11,7 @@ import static java.lang.String.format;
 public class DemoQaFormPage {
 
     public DemoQaFormPage openFormPage() {
-        open("automation-practice-form");
+        open("https://demoqa.com/automation-practice-form");
 
         return this;
     }
