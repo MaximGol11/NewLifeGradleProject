@@ -4,9 +4,11 @@ import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.logevents.SelenideLogger;
 import com.github.javafaker.Faker;
+import io.qameta.allure.*;
 import io.qameta.allure.selenide.AllureSelenide;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import pages.DemoQaFormPage;
@@ -66,7 +68,14 @@ public class FirstTest {
         Configuration.remote = "https://user1:1234@selenoid.autotests.cloud/wd/hub/";
     }
 
+
+
     @Test
+    @Feature("Форма регистрации")
+    @Story("Полное заполнение формы")
+    @Owner("maximGo")
+    @Severity(SeverityLevel.BLOCKER)
+    @DisplayName("Заполнение формы регистрации DemoQA")
     public void demoQaPageObjectsTest() {
         DemoQaFormPage demoQaFormPage = new DemoQaFormPage();
 
@@ -83,28 +92,19 @@ public class FirstTest {
                 .fillCurrentAddress(currentAddress)
                 .selectState(state)
                 .selectCity(city)
-                .submitButtonClick();
-
-        ElementsCollection lines = $$(".table-responsive tbody tr").snapshot();
-
-        SoftAssertions softly = new SoftAssertions();
-
-        for (SelenideElement line: lines) {
-            String key = line.$("td").text(); // Student Name
-            String expectedValue = expectedData.get(key);
-            String actualValue = line.$("td", 1).text();
-
-            softly.assertThat(actualValue)
-                    .as(format("Result in line %s was %s, but expected %s", key, actualValue, expectedValue))
-                    .isEqualTo(expectedValue);
-        }
-        softly.assertAll();
+                .submitButtonClick()
+                .checkForm(expectedData);
     }
 
 
     DragAndDropPage dragAndDropPage = new DragAndDropPage();
 
     @Test
+    @Feature("Drag and Drop test")
+    @Story("Drag and Drop")
+    @Owner("maximGo")
+    @Severity(SeverityLevel.MINOR)
+    @DisplayName("Drag and Drop A to B test")
     public void dragAndDropAtoBTest() {
 
         dragAndDropPage
