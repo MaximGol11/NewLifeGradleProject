@@ -1,12 +1,11 @@
 
 import com.codeborne.selenide.Configuration;
-import com.codeborne.selenide.ElementsCollection;
-import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.logevents.SelenideLogger;
 import com.github.javafaker.Faker;
+import helpers.Attach;
 import io.qameta.allure.*;
 import io.qameta.allure.selenide.AllureSelenide;
-import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,8 +14,7 @@ import pages.DemoQaFormPage;
 import pages.DragAndDropPage;
 import java.util.HashMap;
 import java.util.Map;
-import static com.codeborne.selenide.Selenide.*;
-import static java.lang.String.format;
+
 
 public class FirstTest {
 
@@ -68,7 +66,14 @@ public class FirstTest {
         Configuration.remote = "https://user1:1234@selenoid.autotests.cloud/wd/hub/";
     }
 
+    @AfterEach
+    public void tearDown() {
+        Attach.screenshotAs("Last screenshot");
+        Attach.pageSource();
+        Attach.browserConsoleLogs();
+        Attach.addVideo();
 
+    }
 
     @Test
     @Feature("Форма регистрации")
